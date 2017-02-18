@@ -1,19 +1,13 @@
----
-title: 'Reproducible Research: Peer Assignment 1'
-author: "Stephanie Denis"
-date: "2/18/2017"
-output: 
-  html_document: 
-    keep_md: yes
----
+# Reproducible Research: Peer Assignment 1
+Stephanie Denis  
+2/18/2017  
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 ## Loading packages needed for analysis
 
-```{r load-packages, message = FALSE}
+
+```r
 library(ggplot2)
 library(plyr)
 library(dplyr)
@@ -23,7 +17,8 @@ library(lattice)
 
 ## Loading and preprocessing the data
 
-```{r load-data, message = FALSE}
+
+```r
 # Load data 
 data <- read.csv("activity.csv")
 
@@ -34,12 +29,20 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 str(data)
 ```
 
+```
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Date, format: "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+```
+
 
 ## What is the mean total number of steps taken per day?
 
 The histogram below shows the total number of steps taken each day.
 
-```{r steps-day}
+
+```r
 # Total number of steps per day
 data_day <- ddply(data, .(date), summarise, tot_steps=sum(steps))
 
@@ -49,16 +52,29 @@ hist(data_day$tot_steps, breaks = 25,
         xlab = "", col = "lightblue")
 ```
 
+![](PA1_template_files/figure-html/steps-day-1.png)<!-- -->
+
 The mean and median total number of steps taken per day
 
-```{r summary-stats}
+
+```r
 # Mean total number of steps per day
 mean <- mean((data_day$tot_steps), na.rm = TRUE)
 mean
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 # Median total number of steps per day
 median <- median((data_day$tot_steps), na.rm = TRUE)
 median
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -66,7 +82,8 @@ median
 
 The plot below shows the average number of steps taken, averaged across all days, by 5-minute intervals.
 
-```{r steps-interval}
+
+```r
 # Average number of steps by interval
 data_interval <- ddply(data, .(interval), 
                        summarise, mn_steps=mean(steps, na.rm = TRUE))
@@ -78,25 +95,38 @@ ggplot(data = data_interval, aes(x = interval, y = mn_steps)) +
         labs( x="Five-minute intervals", y="Average number of steps") 
 ```
 
+![](PA1_template_files/figure-html/steps-interval-1.png)<!-- -->
+
 The 5-minute interval with the maximum number of steps across all the days.
 
-```{r max-steps}
+
+```r
 # Interval with max number of steps
 data_interval[which.max(data_interval$mn_steps), 1]
+```
+
+```
+## [1] 835
 ```
 
 ## Imputing missing values
 
 The total number of missing values in the dataset.
 
-```{r total-missings}
+
+```r
 # Total number of missing values
 sum(is.na(data))
 ```
 
+```
+## [1] 2304
+```
+
 A new dataset with the missing values replaced by the mean steps per 5-minute interval across time.
 
-```{r replace-NAs}
+
+```r
 # Place holder for variable with NAs
 data$steps_old <- data$steps
 
@@ -115,16 +145,27 @@ newdata <- newdata[order(newdata$date, newdata$interval),]
 str(newdata)
 ```
 
+```
+## 'data.frame':	17568 obs. of  5 variables:
+##  $ interval : int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ date     : Date, format: "2012-10-01" "2012-10-01" ...
+##  $ steps_old: int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ mn_steps : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+##  $ steps    : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+```
+
 As shown above, the missing values from the first estimates were replaced correctly by the average number of steps per interval across time. Now, we can remove the variables used to check that we merged and replaced the missing values. 
 
-```{r remove-vars}
+
+```r
 newdata$steps_old <- NULL
 newdata$mn_steps <- NULL
 ```
 
 The histogram below shows the total number of steps taken each day using the new dataset.  
 
-```{r histogram-newdata}
+
+```r
 # Total number of steps per day
 newdata_day <- ddply(newdata, .(date), 
                      summarise, tot_steps=sum(steps))
@@ -134,9 +175,12 @@ hist(newdata_day$tot_steps, breaks = 25, main = "Histogram for Total Number of S
         xlab = "", col = "blue")
 ```
 
+![](PA1_template_files/figure-html/histogram-newdata-1.png)<!-- -->
+
 The mean and median total number of steps taken per day.
 
-```{r summary-stats-newdata}
+
+```r
 # Mean total number of steps per day
 mean_new <- mean((newdata_day$tot_steps), na.rm = TRUE)
 
@@ -150,6 +194,12 @@ rownames(x) <- c('Original', 'Filled')
 as.table(x)
 ```
 
+```
+##              Mean   Median
+## Original 10766.19 10765.00
+## Filled   10766.19 10766.19
+```
+
 The median from the new estimates is slightly higher, while the mean for both datasets are the same. The impact of imputing missing data on the estimates barely changes the estimates.
 
 
@@ -157,7 +207,8 @@ The median from the new estimates is slightly higher, while the mean for both da
 
 A new factor variable with two levels – “Weekday” and “Weekend” indicating whether a given date is a weekday or weekend day.
 
-```{r day-variable,message=FALSE}
+
+```r
 # Create a new variable to store day of the week
 dow <- function(x) format(as.Date(x), "%A")
 newdata$day <- dow(newdata$date)
@@ -169,16 +220,33 @@ newdata <- mutate(newdata, daytype = ifelse(day %in% c("Saturday","Sunday"),"Wee
 str(newdata)
 ```
 
+```
+## 'data.frame':	17568 obs. of  5 variables:
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ date    : Date, format: "2012-10-01" "2012-10-01" ...
+##  $ steps   : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+##  $ day     : chr  "Monday" "Monday" "Monday" "Monday" ...
+##  $ daytype : chr  "Weekday" "Weekday" "Weekday" "Weekday" ...
+```
+
 A table showing the number of observations for weekday days and weekend days.
 
-```{r table-daytype}
+
+```r
 # Number of observations per daytype
 table(newdata$daytype)
 ```
 
+```
+## 
+## Weekday Weekend 
+##   12960    4608
+```
+
 The panel below shows the average number of steps taken, averaged across all weekday days or weekend days, by 5-minute intervals.
 
-```{r newdata-intervals}
+
+```r
 # Average number of steps by interval
 newdata_interval <- ddply(newdata, .(interval, daytype), 
                           summarise, mn_steps=mean(steps, na.rm = TRUE))
@@ -191,3 +259,5 @@ ggplot(newdata_interval, aes(interval, mn_steps, colour=daytype)) +
         labs(x="Five-minute intervals", y="Avarage number of steps") +
         theme(legend.position="none")
 ```
+
+![](PA1_template_files/figure-html/newdata-intervals-1.png)<!-- -->
