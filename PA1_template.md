@@ -1,10 +1,9 @@
 # Reproducible Research: Peer Assignment 1
-Stephanie Denis  
 2/18/2017  
 
 
 
-## Loading packages needed for analysis
+### Loading packages needed for analysis
 
 
 ```r
@@ -15,11 +14,12 @@ library(lattice)
 ```
 
 
-## Loading and preprocessing the data
+### Loading and preprocessing the data
 
 
 ```r
-# Load data 
+# Load data
+unzip("activity.zip")
 data <- read.csv("activity.csv")
 
 # Format date variable
@@ -36,8 +36,20 @@ str(data)
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
+Summary statistics for the variables `steps`
 
-## What is the mean total number of steps taken per day?
+
+```r
+# Summary statistics 
+summary(data$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    0.00    0.00    0.00   37.38   12.00  806.00    2304
+```
+
+### What is the mean total number of steps taken per day?
 
 The histogram below shows the total number of steps taken each day.
 
@@ -78,7 +90,7 @@ median
 ```
 
 
-## What is the average daily activity pattern?
+### What is the average daily activity pattern?
 
 The plot below shows the average number of steps taken, averaged across all days, by 5-minute intervals.
 
@@ -109,7 +121,7 @@ data_interval[which.max(data_interval$mn_steps), 1]
 ## [1] 835
 ```
 
-## Imputing missing values
+### Imputing missing values
 
 The total number of missing values in the dataset.
 
@@ -203,7 +215,7 @@ as.table(x)
 The median from the new estimates is slightly higher, while the mean for both datasets are the same. The impact of imputing missing data on the estimates barely changes the estimates.
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+### Are there differences in activity patterns between weekdays and weekends?
 
 A new factor variable with two levels – “Weekday” and “Weekend” indicating whether a given date is a weekday or weekend day.
 

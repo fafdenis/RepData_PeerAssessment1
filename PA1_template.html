@@ -9,7 +9,6 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Stephanie Denis" />
 
 
 <title>Reproducible Research: Peer Assignment 1</title>
@@ -117,22 +116,22 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Reproducible Research: Peer Assignment 1</h1>
-<h4 class="author"><em>Stephanie Denis</em></h4>
 <h4 class="date"><em>2/18/2017</em></h4>
 
 </div>
 
 
-<div id="loading-packages-needed-for-analysis" class="section level2">
-<h2>Loading packages needed for analysis</h2>
+<div id="loading-packages-needed-for-analysis" class="section level3">
+<h3>Loading packages needed for analysis</h3>
 <pre class="r"><code>library(ggplot2)
 library(plyr)
 library(dplyr)
 library(lattice)</code></pre>
 </div>
-<div id="loading-and-preprocessing-the-data" class="section level2">
-<h2>Loading and preprocessing the data</h2>
-<pre class="r"><code># Load data 
+<div id="loading-and-preprocessing-the-data" class="section level3">
+<h3>Loading and preprocessing the data</h3>
+<pre class="r"><code># Load data
+unzip(&quot;activity.zip&quot;)
 data &lt;- read.csv(&quot;activity.csv&quot;)
 
 # Format date variable
@@ -144,9 +143,14 @@ str(data)</code></pre>
 ##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
 ##  $ date    : Date, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...</code></pre>
+<p>Summary statistics for the variables <code>steps</code></p>
+<pre class="r"><code># Summary statistics 
+summary(data$steps)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    0.00    0.00    0.00   37.38   12.00  806.00    2304</code></pre>
 </div>
-<div id="what-is-the-mean-total-number-of-steps-taken-per-day" class="section level2">
-<h2>What is the mean total number of steps taken per day?</h2>
+<div id="what-is-the-mean-total-number-of-steps-taken-per-day" class="section level3">
+<h3>What is the mean total number of steps taken per day?</h3>
 <p>The histogram below shows the total number of steps taken each day.</p>
 <pre class="r"><code># Total number of steps per day
 data_day &lt;- ddply(data, .(date), summarise, tot_steps=sum(steps))
@@ -166,8 +170,8 @@ median &lt;- median((data_day$tot_steps), na.rm = TRUE)
 median</code></pre>
 <pre><code>## [1] 10765</code></pre>
 </div>
-<div id="what-is-the-average-daily-activity-pattern" class="section level2">
-<h2>What is the average daily activity pattern?</h2>
+<div id="what-is-the-average-daily-activity-pattern" class="section level3">
+<h3>What is the average daily activity pattern?</h3>
 <p>The plot below shows the average number of steps taken, averaged across all days, by 5-minute intervals.</p>
 <pre class="r"><code># Average number of steps by interval
 data_interval &lt;- ddply(data, .(interval), 
@@ -184,8 +188,8 @@ ggplot(data = data_interval, aes(x = interval, y = mn_steps)) +
 data_interval[which.max(data_interval$mn_steps), 1]</code></pre>
 <pre><code>## [1] 835</code></pre>
 </div>
-<div id="imputing-missing-values" class="section level2">
-<h2>Imputing missing values</h2>
+<div id="imputing-missing-values" class="section level3">
+<h3>Imputing missing values</h3>
 <p>The total number of missing values in the dataset.</p>
 <pre class="r"><code># Total number of missing values
 sum(is.na(data))</code></pre>
@@ -242,8 +246,8 @@ as.table(x)</code></pre>
 ## Filled   10766.19 10766.19</code></pre>
 <p>The median from the new estimates is slightly higher, while the mean for both datasets are the same. The impact of imputing missing data on the estimates barely changes the estimates.</p>
 </div>
-<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
-<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level3">
+<h3>Are there differences in activity patterns between weekdays and weekends?</h3>
 <p>A new factor variable with two levels – “Weekday” and “Weekend” indicating whether a given date is a weekday or weekend day.</p>
 <pre class="r"><code># Create a new variable to store day of the week
 dow &lt;- function(x) format(as.Date(x), &quot;%A&quot;)
