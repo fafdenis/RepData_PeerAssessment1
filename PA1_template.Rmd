@@ -1,6 +1,6 @@
 ---
 title: 'Reproducible Research: Peer Assignment 1'
-name: "Stephanie Denis"
+author: "Stephanie Denis"
 date: "2/18/2017"
 output: 
   html_document: 

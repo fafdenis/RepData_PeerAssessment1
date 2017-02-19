@@ -1,4 +1,5 @@
 # Reproducible Research: Peer Assignment 1
+Stephanie Denis  
 2/18/2017  
 
 
